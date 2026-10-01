@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experiment P1: PVT Properties of an Ideal Gas</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #111827;
+      background-color: #ffffff;
+      line-height: 1.4;
+      padding: 16px 20px;
+    }
+
+    header {
+      border-bottom: 2px solid #111827;
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: #4b5563;
+      margin-top: 2px;
+    }
+
+    .meta-bar {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: #374151;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 440px 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 1000px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      border: 1px solid #d1d5db;
+      padding: 14px;
+      background: #ffffff;
+    }
+
+    .panel-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+    }
+
+    .rig-container {
+      border: 1px solid #9ca3af;
+      background: #fafafa;
+      height: 480px;
+      position: relative;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      user-select: none;
+    }
+
+    .loupe {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 130px;
+      height: 130px;
+      border: 2px solid #111827;
+      background: #ffffff;
+      pointer-events: none;
+    }
+
+    .loupe-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #111827;
+      color: #ffffff;
+      font-size: 0.65rem;
+      text-align: center;
+      padding: 2px 0;
+      font-family: monospace;
+      letter-spacing: 0.5px;
+    }
+
+    .section-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #374151;
+      text-transform: uppercase;
+      margin: 10px 0 4px;
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .btn {
+      padding: 5px 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid #111827;
+      background: #ffffff;
+      color: #111827;
+      border-radius: 0;
+    }
+
+    .btn:hover {
+      background: #f3f4f6;
+    }
+
+    .btn:active {
+      background: #e5e7eb;
+    }
+
+    .btn.active {
+      background: #111827;
+      color: #ffffff;
+    }
+
+    .btn-sm {
+      padding: 2px 6px;
+      font-size: 0.75rem;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .readouts {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      margin-top: 10px;
+      font-size: 0.82rem;
+      background: #f9fafb;
+      padding: 8px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .readout-item {
+      padding: 4px;
+    }
+
+    .readout-label {
+      font-size: 0.72rem;
+      color: #6b7280;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .readout-val {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #111827;
+    }
+
+    .table-tabs {
+      display: flex;
+      border-bottom: 1px solid #111827;
+      margin-bottom: 10px;
+      gap: 2px;
+    }
+
+    .table-tab {
+      padding: 6px 12px;
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+      border-bottom: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #374151;
+    }
+
+    .table-tab.active {
+      background: #ffffff;
+      border-color: #111827;
+      border-bottom: 1px solid #ffffff;
+      color: #111827;
+      margin-bottom: -1px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      border: 1px solid #111827;
+      margin-bottom: 10px;
+    }
+
+    th, td {
+      border: 1px solid #d1d5db;
+      padding: 5px 8px;
+      text-align: right;
+    }
+
+    th {
+      background: #f3f4f6;
+      font-weight: 700;
+      color: #111827;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+    }
+
+    th:first-child, td:first-child {
+      text-align: center;
+    }
+
+    .chart-box {
+      border: 1px solid #111827;
+      background: #ffffff;
+      height: 320px;
+      position: relative;
+      margin-top: 10px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .constants {
+      font-size: 0.78rem;
+      color: #374151;
+      padding: 6px 8px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      margin-bottom: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .analysis-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 800px) {
+      .analysis-summary {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .analysis-card {
+      border: 1px solid #d1d5db;
+      padding: 6px 8px;
+      background: #fdfdfd;
+    }
+
+    .analysis-card-title {
+      font-weight: 700;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 2px;
+      margin-bottom: 4px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    .verification-box {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border: 1px solid #111827;
+      background: #f9fafb;
+      font-size: 0.8rem;
+    }
+
+    .theory {
+      margin-top: 16px;
+      border-top: 1px solid #d1d5db;
+      padding-top: 12px;
+      font-size: 0.82rem;
+      color: #374151;
+    }
+
+    .theory h3 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      color: #111827;
+    }
+
+    .equation-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 8px;
+      margin-top: 6px;
+      font-family: monospace;
+    }
+
+    .equation-item {
+      border: 1px solid #e5e7eb;
+      padding: 6px;
+      background: #f9fafb;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>MBCE114 / CMB133: Experiment P1 - PVT Properties of an Ideal Gas</h1>
+  <div class="subtitle">Department of Chemical and Biological Engineering, University of Sheffield</div>
+  <div class="meta-bar">
+    <span>Author: Chalak Omar</span>
+    <span>Lead Contact: diamond-lab-support@sheffield.ac.uk</span>
+    <span>Boyle's Law: P ∝ 1/V</span>
+    <span>Charles's Law: V ∝ T</span>
+  </div>
+</header>
+
+<div class="grid">
+  
+  <!-- LEFT: APPARATUS & CONTROLS -->
+  <div>
+    <div class="panel">
+      <div class="panel-title">Apparatus Schematic</div>
+      
+      <div class="rig-container">
+        <svg id="rigSvg" viewBox="0 0 440 480">
+          <!-- Stand Base and Rod -->
+          <rect x="40" y="445" width="120" height="12" fill="#374151" stroke="#111827" stroke-width="1"/>
+          <line x1="60" y1="40" x2="60" y2="445" stroke="#4b5563" stroke-width="6"/>
+          <rect x="60" y="110" width="36" height="6" fill="#374151"/>
+          <rect x="60" y="340" width="36" height="6" fill="#374151"/>
+
+          <!-- Water Bath (Hot / Ice) -->
+          <g id="bathContainer" opacity="0">
+            <rect id="bathRect" x="78" y="180" width="80" height="255" fill="#f3f4f6" stroke="#4b5563" stroke-width="1.5"/>
+            <text id="bathText" x="118" y="200" font-size="9" font-family="monospace" font-weight="bold" fill="#111827" text-anchor="middle">WATER BATH</text>
+          </g>
+
+          <!-- Centimeter Ruler -->
+          <g id="ruler" transform="translate(92, 70)">
+            <rect x="0" y="0" width="18" height="360" fill="#ffffff" stroke="#111827" stroke-width="1"/>
+            <g id="rulerTicks"></g>
+          </g>
+
+          <!-- Capillary Assembly -->
+          <g id="capillary">
+            <!-- Gas Column -->
+            <rect id="gasRect" x="114" y="280" width="10" height="150" fill="#e5e7eb" stroke="none"/>
+            <!-- Mercury Plug -->
+            <g id="mercuryGroup" transform="translate(114, 240)">
+              <rect id="mercuryRect" x="0" y="0" width="10" height="40" fill="#4b5563" stroke="#111827" stroke-width="0.8"/>
+              <ellipse cx="5" cy="0" rx="5" ry="1.5" fill="#374151"/>
+              <ellipse cx="5" cy="40" rx="5" ry="1.5" fill="#1f2937"/>
+            </g>
+            <!-- Glass Tube Wall -->
+            <rect x="113" y="60" width="12" height="370" fill="none" stroke="#111827" stroke-width="1.2"/>
+            <path d="M 113 430 Q 119 438 125 430" fill="none" stroke="#111827" stroke-width="1.2"/>
+            
+            <!-- Connection to Hand Pump -->
+            <path d="M 119 60 C 119 30, 240 30, 260 110" fill="none" stroke="#111827" stroke-width="2.5"/>
+          </g>
+
+          <!-- Dimension Arrow for Height h -->
+          <g id="dimArrow" transform="translate(132, 0)">
+            <line id="dimLine" x1="0" y1="430" x2="0" y2="280" stroke="#111827" stroke-width="1.2" stroke-dasharray="2,2"/>
+            <polygon id="dimArrowTop" points="-2.5,285 0,280 2.5,285" fill="#111827"/>
+            <polygon id="dimArrowBottom" points="-2.5,425 0,430 2.5,425" fill="#111827"/>
+            <text id="dimText" x="6" y="355" font-size="10" font-family="monospace" font-weight="bold" fill="#111827">h = 8.00 cm</text>
+          </g>
+
+          <!-- Hand Vacuum Pump Unit -->
+          <g id="pumpUnit" transform="translate(240, 100)">
+            <rect x="20" y="90" width="90" height="150" fill="#f9fafb" stroke="#111827" stroke-width="1.5"/>
+            
+            <!-- Analog Vacuum Gauge -->
+            <circle cx="65" cy="50" r="44" fill="#ffffff" stroke="#111827" stroke-width="1.5"/>
+            <g id="gaugeTicks" transform="translate(65, 50)"></g>
+            <text x="65" y="68" font-size="7" font-weight="bold" fill="#374151" text-anchor="middle">ΔP (mbar)</text>
+            <line id="gaugeNeedle" x1="65" y1="50" x2="65" y2="16" stroke="#111827" stroke-width="1.8"/>
+            <circle cx="65" cy="50" r="3" fill="#111827"/>
+
+            <!-- Squeeze Handle -->
+            <rect x="58" y="240" width="14" height="40" fill="#d1d5db" stroke="#111827" stroke-width="1"/>
+            <rect x="30" y="275" width="70" height="12" fill="#e5e7eb" stroke="#111827" stroke-width="1.2" cursor="pointer" onclick="squeezePumpStep()"/>
+            <text x="65" y="284" font-size="8" font-weight="bold" fill="#111827" text-anchor="middle">PUMP</text>
+
+            <!-- Valve V1 -->
+            <circle cx="95" cy="120" r="10" fill="#ffffff" stroke="#111827" stroke-width="1.2" cursor="pointer" onclick="ventValve()"/>
+            <line x1="88" y1="120" x2="102" y2="120" stroke="#111827" stroke-width="2"/>
+            <line x1="95" y1="113" x2="95" y2="127" stroke="#111827" stroke-width="2"/>
+            <text x="95" y="139" font-size="7" font-weight="bold" fill="#374151" text-anchor="middle">V1 (VENT)</text>
+
+            <!-- Digital Display -->
+            <rect x="30" y="170" width="70" height="22" fill="#111827"/>
+            <text id="digitalGauge" x="65" y="185" font-size="11" font-family="monospace" font-weight="bold" fill="#ffffff" text-anchor="middle">0.0 mbar</text>
+          </g>
+        </svg>
+
+        <div class="loupe">
+          <svg id="loupeSvg" viewBox="0 0 130 130"></svg>
+          <div class="loupe-caption">SCALE MAGNIFIER</div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="section-label">1. Environment Condition</div>
+      <div class="control-row">
+        <button class="btn active" id="btnAmb" onclick="setEnvironment('ambient')">Ambient (20 °C)</button>
+        <button class="btn" id="btnHot" onclick="setEnvironment('hot')">Hot Water (65 °C)</button>
+        <button class="btn" id="btnCold" onclick="setEnvironment('cold')">Ice Bath (0 °C)</button>
+      </div>
+
+      <div class="section-label">2. Vacuum Hand Pump (ΔP)</div>
+      <div class="control-row">
+        <input type="range" id="pumpSlider" min="-400" max="0" step="5" value="0" oninput="onPumpSliderChange(this.value)">
+        <span style="font-family: monospace; font-weight: bold; width: 70px; text-align: right;" id="sliderVal">0 mbar</span>
+      </div>
+      <div class="control-row">
+        <button class="btn" onclick="squeezePumpStep()">Squeeze Pump (-30 mbar)</button>
+        <button class="btn" onclick="ventValve()">Vent to Ambient (V1 = 0)</button>
+        <button class="btn" onclick="recordCurrentPoint()">Record Point</button>
+      </div>
+
+      <!-- Live Readouts -->
+      <div class="readouts">
+        <div class="readout-item">
+          <div class="readout-label">Air Height h</div>
+          <div class="readout-val" id="readoutH">8.00 cm</div>
+        </div>
+        <div class="readout-item">
+          <div class="readout-label">Gauge ΔP</div>
+          <div class="readout-val" id="readoutDeltaP">0.0 mbar</div>
+        </div>
+        <div class="readout-item">
+          <div class="readout-label">Absolute P [Eq. 4]</div>
+          <div class="readout-val" id="readoutP">1033.3 mbar</div>
+        </div>
+        <div class="readout-item">
+          <div class="readout-label">Air Volume V [Eq. 6]</div>
+          <div class="readout-val" id="readoutV">458.0 mm³</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: DATA TABLES & REGRESSION PLOT -->
+  <div>
+    <div class="panel">
+      <div class="panel-title">Experimental Data & Analysis</div>
+
+      <div class="table-tabs">
+        <button class="table-tab active" id="tab1" onclick="switchTableTab(1)">Table 1: Ambient (20 °C)</button>
+        <button class="table-tab" id="tab2" onclick="switchTableTab(2)">Table 2: Hot Water (65 °C)</button>
+        <button class="table-tab" id="tab3" onclick="switchTableTab(3)">Table 3: Ice Bath (0 °C)</button>
+      </div>
+
+      <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+        <button class="btn btn-sm" onclick="autoSampleCurrentTable()">Auto-fill 10 Points</button>
+        <button class="btn btn-sm" onclick="copyTableData()">Copy TSV for Excel</button>
+        <button class="btn btn-sm" onclick="clearCurrentTable()">Clear Table</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Pt</th>
+            <th>ΔP (mbar)</th>
+            <th>h (cm)</th>
+            <th>P = Pamb+ΔP+PHg (mbar)</th>
+            <th>V = π/4 d² h (mm³)</th>
+            <th>PV (mbar·mm³)</th>
+            <th style="text-align: center;">Del</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+
+      <div class="constants">
+        <span><strong>Pamb:</strong> 1000.0 mbar</span>
+        <span><strong>Capillary d:</strong> 2.7 mm</span>
+        <span><strong>Area A:</strong> 5.726 mm²</span>
+        <span><strong>hHg:</strong> 2.50 cm (PHg = 33.3 mbar)</span>
+      </div>
+
+      <!-- Section 5: PV vs P Plot -->
+      <div style="font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-top: 10px;">
+        Section 5: Plot of PV vs P (Boyle's Law Verification)
+      </div>
+      <div class="chart-box">
+        <canvas id="plotCanvas" width="560" height="320"></canvas>
+      </div>
+
+      <!-- Linear Regression Results -->
+      <div class="analysis-summary">
+        <div class="analysis-card">
+          <div class="analysis-card-title">Ambient (20 °C)</div>
+          <div>Points: <strong id="ptsAmb">0 / 10</strong></div>
+          <div>Gradient m: <strong id="slopeAmb">-</strong></div>
+          <div>Intercept c: <strong id="intAmb">-</strong></div>
+        </div>
+        <div class="analysis-card">
+          <div class="analysis-card-title">Hot Water (65 °C)</div>
+          <div>Points: <strong id="ptsHot">0 / 10</strong></div>
+          <div>Gradient m: <strong id="slopeHot">-</strong></div>
+          <div>Intercept c: <strong id="intHot">-</strong></div>
+        </div>
+        <div class="analysis-card">
+          <div class="analysis-card-title">Ice Bath (0 °C)</div>
+          <div>Points: <strong id="ptsCold">0 / 10</strong></div>
+          <div>Gradient m: <strong id="slopeCold">-</strong></div>
+          <div>Intercept c: <strong id="intCold">-</strong></div>
+        </div>
+      </div>
+
+      <div class="verification-box" id="charlesBox">
+        <strong>Charles's Law Evaluation:</strong> Complete data points for all three temperatures to compare intercepts (c_hot > c_amb > c_cold).
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- THEORY REFERENCE -->
+<div class="theory">
+  <h3>Laboratory Equations Reference</h3>
+  <div class="equation-list">
+    <div class="equation-item">(1) PV = nRT → P v_mol = RT</div>
+    <div class="equation-item">(4) P = Pamb + ΔP + PHg</div>
+    <div class="equation-item">(5) PHg = ρHg · g · hHg ≈ 33.3 mbar</div>
+    <div class="equation-item">(6) V = (π · d² / 4) · h &nbsp;(d = 2.7 mm)</div>
+    <div class="equation-item">(7) PV = c &nbsp;(Boyle's law: gradient = 0)</div>
+  </div>
+</div>
+
+<script>
+  /* CONSTANTS */
+  const PAMB = 1000.0;
+  const D_CAPILLARY = 2.7;
+  const H_HG_CM = 2.50;
+  const RHO_HG = 13595.0;
+  const G_ACCEL = 9.80665;
+  const P_HG = (RHO_HG * G_ACCEL * (H_HG_CM * 0.01)) / 100.0; // 33.327 mbar
+  const AREA_MM2 = (Math.PI * Math.pow(D_CAPILLARY, 2)) / 4.0; // 5.72555 mm^2
+
+  const ENVS = {
+    ambient: { name: 'Ambient', tempC: 20.0, tempK: 293.15 },
+    hot:     { name: 'Hot Water', tempC: 65.0, tempK: 338.15 },
+    cold:    { name: 'Ice Bath', tempC: 0.0,  tempK: 273.15 }
+  };
+
+  const R_GAS = 8.314462;
+  const H0_AMB_CM = 8.00;
+  const V0_M3 = (AREA_MM2 * 1e-6) * (H0_AMB_CM * 0.01);
+  const P0_PA = (PAMB + P_HG) * 100.0;
+  const N_MOLES = (P0_PA * V0_M3) / (R_GAS * ENVS.ambient.tempK);
+
+  /* STATE */
+  let currentEnv = 'ambient';
+  let currentDeltaP = 0.0;
+  let activeTab = 1;
+
+  const tableData = {
+    1: [],
+    2: [],
+    3: []
+  };
+
+  window.addEventListener('DOMContentLoaded', () => {
+    initRulerTicks();
+    initGaugeTicks();
+    updateApparatus();
+    renderTable();
+    updateChart();
+  });
+
+  function initRulerTicks() {
+    const ticks = document.getElementById('rulerTicks');
+    ticks.innerHTML = '';
+    const yBottom = 360;
+    const yTop = 20;
+    const totalCm = 20;
+
+    for (let cm = 0; cm <= totalCm; cm++) {
+      const y = yBottom - (cm / totalCm) * (yBottom - yTop);
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', '0');
+      line.setAttribute('y1', y);
+      line.setAttribute('x2', '8');
+      line.setAttribute('y2', y);
+      line.setAttribute('stroke', '#111827');
+      line.setAttribute('stroke-width', '1');
+      ticks.appendChild(line);
+
+      if (cm % 2 === 0) {
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', '10');
+        text.setAttribute('y', y + 3);
+        text.setAttribute('font-size', '6.5');
+        text.setAttribute('font-family', 'monospace');
+        text.setAttribute('fill', '#111827');
+        text.textContent = cm;
+        ticks.appendChild(text);
+      }
+
+      if (cm < totalCm) {
+        for (let mm = 1; mm < 10; mm++) {
+          const my = y - (mm / 10) * ((yBottom - yTop) / totalCm);
+          const mline = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          mline.setAttribute('x1', '0');
+          mline.setAttribute('y1', my);
+          mline.setAttribute('x2', mm === 5 ? '5' : '3');
+          mline.setAttribute('y2', my);
+          mline.setAttribute('stroke', '#4b5563');
+          mline.setAttribute('stroke-width', '0.5');
+          ticks.appendChild(mline);
+        }
+      }
+    }
+  }
+
+  function initGaugeTicks() {
+    const gTicks = document.getElementById('gaugeTicks');
+    gTicks.innerHTML = '';
+    for (let p = 0; p <= 500; p += 50) {
+      const angleDeg = -120 + (p / 500) * 240;
+      const angleRad = (angleDeg - 90) * Math.PI / 180;
+      const r1 = 34, r2 = 40;
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', r1 * Math.cos(angleRad));
+      line.setAttribute('y1', r1 * Math.sin(angleRad));
+      line.setAttribute('x2', r2 * Math.cos(angleRad));
+      line.setAttribute('y2', r2 * Math.sin(angleRad));
+      line.setAttribute('stroke', '#111827');
+      line.setAttribute('stroke-width', p % 100 === 0 ? '1.5' : '0.8');
+      gTicks.appendChild(line);
+
+      if (p % 100 === 0) {
+        const tr = 26;
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', tr * Math.cos(angleRad));
+        text.setAttribute('y', tr * Math.sin(angleRad) + 3);
+        text.setAttribute('font-size', '6.5');
+        text.setAttribute('font-family', 'monospace');
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('fill', '#111827');
+        text.textContent = `-${p}`;
+        gTicks.appendChild(text);
+      }
+    }
+  }
+
+  function computeGasState(deltaP, envKey) {
+    const env = ENVS[envKey];
+    const P_mbar = PAMB + deltaP + P_HG;
+    const P_pa = P_mbar * 100.0;
+    const V_m3 = (N_MOLES * R_GAS * env.tempK) / P_pa;
+    const V_mm3 = V_m3 * 1e9;
+    const h_mm = V_mm3 / AREA_MM2;
+    const h_cm = h_mm / 10.0;
+    const PV = P_mbar * V_mm3;
+
+    return { deltaP, P_mbar, V_mm3, h_cm, PV, tempK: env.tempK };
+  }
+
+  function setEnvironment(envKey) {
+    currentEnv = envKey;
+    document.getElementById('btnAmb').classList.toggle('active', envKey === 'ambient');
+    document.getElementById('btnHot').classList.toggle('active', envKey === 'hot');
+    document.getElementById('btnCold').classList.toggle('active', envKey === 'cold');
+
+    if (envKey === 'ambient') switchTableTab(1);
+    else if (envKey === 'hot') switchTableTab(2);
+    else if (envKey === 'cold') switchTableTab(3);
+
+    updateApparatus();
+  }
+
+  function onPumpSliderChange(val) {
+    currentDeltaP = parseFloat(val);
+    document.getElementById('sliderVal').textContent = `${currentDeltaP.toFixed(0)} mbar`;
+    updateApparatus();
+  }
+
+  function squeezePumpStep() {
+    currentDeltaP = Math.max(-400, currentDeltaP - 30);
+    document.getElementById('pumpSlider').value = currentDeltaP;
+    document.getElementById('sliderVal').textContent = `${currentDeltaP.toFixed(0)} mbar`;
+    updateApparatus();
+  }
+
+  function ventValve() {
+    currentDeltaP = 0;
+    document.getElementById('pumpSlider').value = 0;
+    document.getElementById('sliderVal').textContent = `0 mbar`;
+    updateApparatus();
+  }
+
+  function switchTableTab(idx) {
+    activeTab = idx;
+    for (let i = 1; i <= 3; i++) {
+      document.getElementById(`tab${i}`).classList.toggle('active', i === idx);
+    }
+    renderTable();
+  }
+
+  function updateApparatus() {
+    const state = computeGasState(currentDeltaP, currentEnv);
+
+    document.getElementById('digitalGauge').textContent = `${currentDeltaP.toFixed(1)} mbar`;
+    document.getElementById('readoutH').textContent = `${state.h_cm.toFixed(2)} cm`;
+    document.getElementById('readoutDeltaP').textContent = `${currentDeltaP.toFixed(1)} mbar`;
+    document.getElementById('readoutP').textContent = `${state.P_mbar.toFixed(1)} mbar`;
+    document.getElementById('readoutV').textContent = `${state.V_mm3.toFixed(1)} mm³`;
+
+    // Needle rotation (0 to -500 mbar across -120 to +120 deg)
+    const deg = -120 + (Math.abs(currentDeltaP) / 500) * 240;
+    const rad = (deg - 90) * Math.PI / 180;
+    const needle = document.getElementById('gaugeNeedle');
+    needle.setAttribute('x2', 65 + 32 * Math.cos(rad));
+    needle.setAttribute('y2', 50 + 32 * Math.sin(rad));
+
+    // Capillary tube scale mapping: 0 cm is at y = 430px, 20 cm is at y = 90px (340px)
+    const pxPerCm = 17.0;
+    const yZero = 430;
+    const gasHeightPx = state.h_cm * pxPerCm;
+    const gasTopY = yZero - gasHeightPx;
+
+    const gasRect = document.getElementById('gasRect');
+    gasRect.setAttribute('y', gasTopY);
+    gasRect.setAttribute('height', gasHeightPx);
+
+    const hgHeightPx = H_HG_CM * pxPerCm; // 42.5 px
+    const mercuryGroup = document.getElementById('mercuryGroup');
+    mercuryGroup.setAttribute('transform', `translate(114, ${gasTopY - hgHeightPx})`);
+    document.getElementById('mercuryRect').setAttribute('height', hgHeightPx);
+
+    // Dimension Arrow
+    document.getElementById('dimLine').setAttribute('y1', yZero);
+    document.getElementById('dimLine').setAttribute('y2', gasTopY);
+    document.getElementById('dimArrowTop').setAttribute('points', `-2.5,${gasTopY + 5} 0,${gasTopY} 2.5,${gasTopY + 5}`);
+    document.getElementById('dimArrowBottom').setAttribute('points', `-2.5,${yZero - 5} 0,${yZero} 2.5,${yZero - 5}`);
+    document.getElementById('dimText').setAttribute('y', (yZero + gasTopY) / 2 + 4);
+    document.getElementById('dimText').textContent = `h = ${state.h_cm.toFixed(2)} cm`;
+
+    // Water bath container visibility
+    const bath = document.getElementById('bathContainer');
+    const bathText = document.getElementById('bathText');
+    if (currentEnv === 'ambient') {
+      bath.setAttribute('opacity', '0');
+    } else if (currentEnv === 'hot') {
+      bath.setAttribute('opacity', '1');
+      bathText.textContent = 'HOT BATH (65 °C)';
+    } else if (currentEnv === 'cold') {
+      bath.setAttribute('opacity', '1');
+      bathText.textContent = 'ICE BATH (0 °C)';
+    }
+
+    updateLoupe(state.h_cm, gasTopY);
+  }
+
+  function updateLoupe(h_cm, gasTopY) {
+    const loupe = document.getElementById('loupeSvg');
+    loupe.innerHTML = '';
+    const scale = 2.2;
+    const cx = 65, cy = 65;
+
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.setAttribute('transform', `translate(${cx}, ${cy}) scale(${scale}) translate(-110, -${gasTopY})`);
+
+    // Ruler
+    const ruler = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    ruler.setAttribute('x', '92');
+    ruler.setAttribute('y', gasTopY - 35);
+    ruler.setAttribute('width', '18');
+    ruler.setAttribute('height', '70');
+    ruler.setAttribute('fill', '#ffffff');
+    ruler.setAttribute('stroke', '#111827');
+    ruler.setAttribute('stroke-width', '0.8');
+    g.appendChild(ruler);
+
+    const pxPerCm = 17.0;
+    const yZero = 430;
+    const minCm = Math.max(0, Math.floor(h_cm - 2));
+    const maxCm = Math.min(20, Math.ceil(h_cm + 2));
+
+    for (let c = minCm; c <= maxCm; c++) {
+      const cyPos = yZero - c * pxPerCm;
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', '92');
+      line.setAttribute('y1', cyPos);
+      line.setAttribute('x2', '100');
+      line.setAttribute('y2', cyPos);
+      line.setAttribute('stroke', '#111827');
+      line.setAttribute('stroke-width', '0.8');
+      g.appendChild(line);
+
+      const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      txt.setAttribute('x', '102');
+      txt.setAttribute('y', cyPos + 2.5);
+      txt.setAttribute('font-size', '6');
+      txt.setAttribute('font-family', 'monospace');
+      txt.setAttribute('fill', '#111827');
+      txt.textContent = c;
+      g.appendChild(txt);
+
+      for (let m = 1; m < 10; m++) {
+        const my = cyPos - (m / 10) * pxPerCm;
+        const mline = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        mline.setAttribute('x1', '92');
+        mline.setAttribute('y1', my);
+        mline.setAttribute('x2', m === 5 ? '97' : '95');
+        mline.setAttribute('y2', my);
+        mline.setAttribute('stroke', '#4b5563');
+        mline.setAttribute('stroke-width', '0.4');
+        g.appendChild(mline);
+      }
+    }
+
+    // Capillary and Mercury in Loupe
+    const tube = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    tube.setAttribute('x', '113');
+    tube.setAttribute('y', gasTopY - 35);
+    tube.setAttribute('width', '12');
+    tube.setAttribute('height', '70');
+    tube.setAttribute('fill', 'none');
+    tube.setAttribute('stroke', '#111827');
+    tube.setAttribute('stroke-width', '0.8');
+    g.appendChild(tube);
+
+    const hg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    hg.setAttribute('x', '114');
+    hg.setAttribute('y', gasTopY - 30);
+    hg.setAttribute('width', '10');
+    hg.setAttribute('height', '30');
+    hg.setAttribute('fill', '#4b5563');
+    g.appendChild(hg);
+
+    const meniscus = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+    meniscus.setAttribute('cx', '119');
+    meniscus.setAttribute('cy', gasTopY);
+    meniscus.setAttribute('rx', '5');
+    meniscus.setAttribute('ry', '1.5');
+    meniscus.setAttribute('fill', '#1f2937');
+    g.appendChild(meniscus);
+
+    loupe.appendChild(g);
+
+    // Crosshairs
+    const retX = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    retX.setAttribute('x1', '0'); retX.setAttribute('y1', cy);
+    retX.setAttribute('x2', '130'); retX.setAttribute('y2', cy);
+    retX.setAttribute('stroke', '#dc2626'); retX.setAttribute('stroke-width', '0.8');
+    retX.setAttribute('stroke-dasharray', '3,3');
+    loupe.appendChild(retX);
+
+    const read = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    read.setAttribute('x', '65');
+    read.setAttribute('y', '20');
+    read.setAttribute('font-size', '10');
+    read.setAttribute('font-family', 'monospace');
+    read.setAttribute('font-weight', 'bold');
+    read.setAttribute('text-anchor', 'middle');
+    read.setAttribute('fill', '#111827');
+    read.textContent = `${h_cm.toFixed(2)} cm`;
+    loupe.appendChild(read);
+  }
+
+  function recordCurrentPoint() {
+    const list = tableData[activeTab];
+    if (list.length >= 10) {
+      alert(`Table ${activeTab} is full (10 points).`);
+      return;
+    }
+
+    const state = computeGasState(currentDeltaP, currentEnv);
+    const readingH = parseFloat((state.h_cm + (Math.random() - 0.5) * 0.03).toFixed(2));
+    const calcV = parseFloat((AREA_MM2 * readingH * 10).toFixed(1));
+    const calcP = parseFloat((PAMB + currentDeltaP + P_HG).toFixed(1));
+    const calcPV = parseFloat((calcP * calcV).toFixed(0));
+
+    list.push({
+      index: list.length + 1,
+      deltaP: currentDeltaP,
+      h: readingH,
+      P: calcP,
+      V: calcV,
+      PV: calcPV
+    });
+
+    renderTable();
+    updateChart();
+  }
+
+  function autoSampleCurrentTable() {
+    tableData[activeTab] = [];
+    const steps = [0, -30, -60, -90, -120, -150, -180, -210, -240, -270];
+
+    steps.forEach((dP, i) => {
+      const state = computeGasState(dP, currentEnv);
+      const readingH = parseFloat((state.h_cm + (Math.random() - 0.5) * 0.03).toFixed(2));
+      const calcV = parseFloat((AREA_MM2 * readingH * 10).toFixed(1));
+      const calcP = parseFloat((PAMB + dP + P_HG).toFixed(1));
+      const calcPV = parseFloat((calcP * calcV).toFixed(0));
+
+      tableData[activeTab].push({
+        index: i + 1,
+        deltaP: dP,
+        h: readingH,
+        P: calcP,
+        V: calcV,
+        PV: calcPV
+      });
+    });
+
+    renderTable();
+    updateChart();
+  }
+
+  function clearCurrentTable() {
+    tableData[activeTab] = [];
+    renderTable();
+    updateChart();
+  }
+
+  function deletePoint(ptIndex) {
+    tableData[activeTab] = tableData[activeTab].filter(p => p.index !== ptIndex);
+    tableData[activeTab].forEach((p, i) => p.index = i + 1);
+    renderTable();
+    updateChart();
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+    const list = tableData[activeTab];
+
+    for (let i = 1; i <= 10; i++) {
+      const pt = list.find(p => p.index === i);
+      const tr = document.createElement('tr');
+      if (pt) {
+        tr.innerHTML = `
+          <td>${pt.index}</td>
+          <td>${pt.deltaP.toFixed(1)}</td>
+          <td>${pt.h.toFixed(2)}</td>
+          <td>${pt.P.toFixed(1)}</td>
+          <td>${pt.V.toFixed(1)}</td>
+          <td><strong>${pt.PV.toLocaleString()}</strong></td>
+          <td style="text-align: center;"><button class="btn btn-sm" onclick="deletePoint(${pt.index})">×</button></td>
+        `;
+      } else {
+        tr.innerHTML = `
+          <td style="color:#9ca3af;">${i}</td>
+          <td style="color:#d1d5db;">-</td>
+          <td style="color:#d1d5db;">-</td>
+          <td style="color:#d1d5db;">-</td>
+          <td style="color:#d1d5db;">-</td>
+          <td style="color:#d1d5db;">-</td>
+          <td style="text-align:center; color:#d1d5db;">-</td>
+        `;
+      }
+      tbody.appendChild(tr);
+    }
+  }
+
+  function copyTableData() {
+    const list = tableData[activeTab];
+    if (list.length === 0) {
+      alert("Table is empty.");
+      return;
+    }
+    let tsv = "Point\tDelta_P (mbar)\th (cm)\tP (mbar)\tV (mm3)\tPV (mbar mm3)\n";
+    list.forEach(p => {
+      tsv += `${p.index}\t${p.deltaP}\t${p.h}\t${p.P}\t${p.V}\t${p.PV}\n`;
+    });
+    navigator.clipboard.writeText(tsv).then(() => alert(`Table ${activeTab} copied to clipboard.`));
+  }
+
+  function linearRegression(points) {
+    if (points.length < 2) return null;
+    let n = points.length;
+    let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+
+    points.forEach(p => {
+      sumX += p.P;
+      sumY += p.PV;
+      sumXY += p.P * p.PV;
+      sumX2 += p.P * p.P;
+    });
+
+    const denom = n * sumX2 - sumX * sumX;
+    if (denom === 0) return null;
+    const slope = (n * sumXY - sumX * sumY) / denom;
+    const intercept = (sumY - slope * sumX) / n;
+    return { slope, intercept };
+  }
+
+  function updateChart() {
+    const canvas = document.getElementById('plotCanvas');
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+
+    ctx.clearRect(0, 0, w, h);
+
+    const padL = 65, padR = 25, padT = 20, padB = 40;
+    const plotW = w - padL - padR;
+    const plotH = h - padT - padB;
+
+    const minP = 550, maxP = 1100;
+    const minPV = 350000, maxPV = 650000;
+
+    function toX(p) { return padL + ((p - minP) / (maxP - minP)) * plotW; }
+    function toY(pv) { return padT + (1 - (pv - minPV) / (maxPV - minPV)) * plotH; }
+
+    // Grid lines & Axis
+    ctx.strokeStyle = '#e5e7eb';
+    ctx.lineWidth = 1;
+    ctx.fillStyle = '#4b5563';
+    ctx.font = '10px monospace';
+    ctx.textAlign = 'right';
+
+    for (let pv = 400000; pv <= 600000; pv += 50000) {
+      const y = toY(pv);
+      ctx.beginPath();
+      ctx.moveTo(padL, y);
+      ctx.lineTo(w - padR, y);
+      ctx.stroke();
+      ctx.fillText(`${(pv / 1000).toFixed(0)}k`, padL - 6, y + 3);
+    }
+
+    ctx.textAlign = 'center';
+    for (let p = 600; p <= 1100; p += 100) {
+      const x = toX(p);
+      ctx.beginPath();
+      ctx.moveTo(x, padT);
+      ctx.lineTo(x, h - padB);
+      ctx.stroke();
+      ctx.fillText(`${p}`, x, h - padB + 14);
+    }
+
+    // Outer Axis Border
+    ctx.strokeStyle = '#111827';
+    ctx.strokeRect(padL, padT, plotW, plotH);
+
+    ctx.fillStyle = '#111827';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.fillText('P (mbar)', padL + plotW / 2, h - 8);
+
+    ctx.save();
+    ctx.translate(16, padT + plotH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.fillText('PV (mbar · mm³)', 0, 0);
+    ctx.restore();
+
+    // Series Definitions
+    const series = [
+      { id: 1, name: 'Ambient', color: '#111827', shape: 'circle', ptsEl: 'ptsAmb', slopeEl: 'slopeAmb', intEl: 'intAmb' },
+      { id: 2, name: 'Hot Water', color: '#b91c1c', shape: 'square', ptsEl: 'ptsHot', slopeEl: 'slopeHot', intEl: 'intHot' },
+      { id: 3, name: 'Ice Bath', color: '#1d4ed8', shape: 'triangle', ptsEl: 'ptsCold', slopeEl: 'slopeCold', intEl: 'intCold' }
+    ];
+
+    const results = {};
+
+    series.forEach(s => {
+      const pts = tableData[s.id];
+      document.getElementById(s.ptsEl).textContent = `${pts.length} / 10`;
+
+      if (pts.length > 0) {
+        ctx.fillStyle = s.color;
+        ctx.strokeStyle = s.color;
+
+        pts.forEach(pt => {
+          const cx = toX(pt.P);
+          const cy = toY(pt.PV);
+          ctx.beginPath();
+          if (s.shape === 'circle') {
+            ctx.arc(cx, cy, 3.5, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (s.shape === 'square') {
+            ctx.fillRect(cx - 3, cy - 3, 6, 6);
+          } else if (s.shape === 'triangle') {
+            ctx.moveTo(cx, cy - 4);
+            ctx.lineTo(cx + 4, cy + 3);
+            ctx.lineTo(cx - 4, cy + 3);
+            ctx.closePath();
+            ctx.fill();
+          }
+        });
+
+        const reg = linearRegression(pts);
+        if (reg) {
+          results[s.id] = reg;
+          document.getElementById(s.slopeEl).textContent = reg.slope.toFixed(2);
+          document.getElementById(s.intEl).textContent = Math.round(reg.intercept).toLocaleString();
+
+          ctx.beginPath();
+          ctx.lineWidth = 1.5;
+          ctx.moveTo(toX(minP), toY(reg.slope * minP + reg.intercept));
+          ctx.lineTo(toX(maxP), toY(reg.slope * maxP + reg.intercept));
+          ctx.stroke();
+        } else {
+          document.getElementById(s.slopeEl).textContent = '-';
+          document.getElementById(s.intEl).textContent = '-';
+        }
+      } else {
+        document.getElementById(s.slopeEl).textContent = '-';
+        document.getElementById(s.intEl).textContent = '-';
+      }
+    });
+
+    // Charles's Law Check
+    const cBox = document.getElementById('charlesBox');
+    if (results[1] && results[2] && results[3]) {
+      const cAmb = results[1].intercept;
+      const cHot = results[2].intercept;
+      const cCold = results[3].intercept;
+
+      if (cHot > cAmb && cAmb > cCold) {
+        cBox.innerHTML = `
+          <strong>Charles's Law Verified:</strong> Intercepts follow temperature order:<br>
+          Hot (${Math.round(cHot).toLocaleString()}) &gt; Ambient (${Math.round(cAmb).toLocaleString()}) &gt; Cold (${Math.round(cCold).toLocaleString()}).
+          Intercept c is proportional to absolute temperature T (PV = nRT).
+        `;
+      } else {
+        cBox.innerHTML = `
+          Intercepts calculated: Hot = ${Math.round(cHot)}, Ambient = ${Math.round(cAmb)}, Cold = ${Math.round(cCold)}.
+        `;
+      }
+    } else {
+      cBox.innerHTML = `
+        <strong>Charles's Law Evaluation:</strong> Complete data points for all three tables to compare intercepts (c_hot > c_amb > c_cold).
+      `;
+    }
+
+    // Legend
+    const legX = w - 140, legY = padT + 8;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(legX, legY, 130, 56);
+    ctx.strokeStyle = '#d1d5db';
+    ctx.strokeRect(legX, legY, 130, 56);
+
+    series.forEach((s, idx) => {
+      const ly = legY + idx * 16 + 12;
+      ctx.fillStyle = s.color;
+      if (s.shape === 'circle') {
+        ctx.beginPath(); ctx.arc(legX + 10, ly, 3, 0, Math.PI * 2); ctx.fill();
+      } else if (s.shape === 'square') {
+        ctx.fillRect(legX + 7, ly - 3, 6, 6);
+      } else if (s.shape === 'triangle') {
+        ctx.beginPath();
+        ctx.moveTo(legX + 10, ly - 3.5);
+        ctx.lineTo(legX + 14, ly + 3.5);
+        ctx.lineTo(legX + 6, ly + 3.5);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      ctx.fillStyle = '#111827';
+      ctx.font = '9px monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(s.name, legX + 22, ly + 3);
+    });
+  }
+</script>
+
+</body>
+</html>
