@@ -513,12 +513,17 @@
     const idealV_mm3 = idealV_m3 * 1e9;
     const idealH_cm = (idealV_mm3 / AREA_MM2) / 10.0;
 
-    // Real height includes meniscus stick-slip friction error
+    // Real air column height includes meniscus stick-slip friction error
     const measuredH_cm = idealH_cm + meniscusFrictionError;
+
+    // Liquid mercury thermal expansion (beta ≈ 1.81e-4 / K)
+    const hgThermalExpansion = BASE_H_HG_CM * (1 + 0.000181 * (env.tempC - 20.0));
+    // Dynamic meniscus curvature variation when sliding vs settled (±0.01 cm)
+    const measuredHHg_cm = hgThermalExpansion + (meniscusFrictionError * 0.25);
 
     return {
       h_cm: measuredH_cm,
-      h_hg_cm: BASE_H_HG_CM
+      h_hg_cm: measuredHHg_cm
     };
   }
 
